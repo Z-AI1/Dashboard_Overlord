@@ -31,8 +31,8 @@ function App() {
   const [novoBarbeiro, setNovoBarbeiro] = useState('');
 
   const handleAddBarbeiro = () => {
-    if (novoBarbeiro) {
-      setBarbeiros([...barbeiros, novoBarbeiro]);
+    if (novoBarbeiro.trim()) {
+      setBarbeiros([...barbeiros, novoBarbeiro.trim()]);
       setNovoBarbeiro('');
     }
   };
@@ -50,7 +50,9 @@ function App() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`text-sm font-medium ${
-                  activeView === 'dashboard' ? 'text-white border-b-2 border-amber-400' : 'text-gray-300 hover:text-white'
+                  activeView === 'dashboard' 
+                    ? 'text-white border-b-2 border-amber-400' 
+                    : 'text-gray-300 hover:text-white'
                 }`}
                 onClick={() => setActiveView('dashboard')}
               >
@@ -61,7 +63,9 @@ function App() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`text-sm font-medium ${
-                  activeView === 'barbeiros' ? 'text-white border-b-2 border-amber-400' : 'text-gray-300 hover:text-white'
+                  activeView === 'barbeiros' 
+                    ? 'text-white border-b-2 border-amber-400' 
+                    : 'text-gray-300 hover:text-white'
                 }`}
                 onClick={() => setActiveView('barbeiros')}
               >
@@ -76,7 +80,7 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeView === 'dashboard' && (
           <>
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-end mb-8"> {/* Filtro alinhado à direita */}
               <div className="flex gap-2">
                 {(['day', 'week', 'month'] as TimeFilter[]).map((filter) => (
                   <motion.button
@@ -138,34 +142,48 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-xl p-6 shadow-lg"
           >
-            <h2 className="text-2xl font-bold mb-6">Gerenciamento de Barbeiros</h2>
+            <h2 className="text-2xl font-bold mb-6">Cadastro de Barbeiros</h2>
             <div className="flex gap-4 mb-6">
               <input
                 type="text"
                 value={novoBarbeiro}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setNovoBarbeiro(e.target.value)}
-                placeholder="Nome do novo barbeiro"
+                placeholder="Nome completo do barbeiro"
                 className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400"
+                onKeyPress={(e) => e.key === 'Enter' && handleAddBarbeiro()}
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleAddBarbeiro}
-                className="bg-amber-400 text-white px-6 py-3 rounded-lg flex items-center gap-2"
+                className="bg-amber-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-amber-500 transition-colors"
               >
                 <PlusCircle size={18} />
                 Adicionar
               </motion.button>
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {barbeiros.map((barbeiro, index) => (
-                <div key={index} className="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="bg-gray-50 p-4 rounded-lg flex items-center justify-between"
+                >
                   <span className="font-medium">{barbeiro}</span>
                   <div className="flex gap-2">
-                    <button className="text-amber-600 hover:text-amber-700">Editar</button>
-                    <button className="text-red-500 hover:text-red-600">Remover</button>
+                    <button className="text-amber-600 hover:text-amber-700 px-2 py-1">
+                      Editar
+                    </button>
+                    <button 
+                      className="text-red-500 hover:text-red-600 px-2 py-1"
+                      onClick={() => setBarbeiros(barbeiros.filter((_, i) => i !== index))}
+                    >
+                      Remover
+                    </button>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>
