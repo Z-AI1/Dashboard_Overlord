@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import { Scissors, Users, DollarSign, TrendingUp, PlusCircle, Link } from 'lucide-react';
+import { Scissors, Users, DollarSign, TrendingUp, PlusCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import StatsCard from './components/StatsCard';
 import BarberPerformanceChart from './components/BarberPerformanceChart';
@@ -27,7 +27,6 @@ const cutTypesData = [
 function App() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('day');
   const [activeView, setActiveView] = useState('dashboard');
-  const [webhookUrl, setWebhookUrl] = useState('');
   const [barbeiros, setBarbeiros] = useState<string[]>([]);
   const [novoBarbeiro, setNovoBarbeiro] = useState('');
 
@@ -68,17 +67,6 @@ function App() {
               >
                 Barbeiros
               </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`text-sm font-medium ${
-                  activeView === 'webhook' ? 'text-white border-b-2 border-amber-400' : 'text-gray-300 hover:text-white'
-                }`}
-                onClick={() => setActiveView('webhook')}
-              >
-                Webhook
-              </motion.button>
             </div>
           </div>
         </div>
@@ -110,11 +98,40 @@ function App() {
               </div>
             </div>
 
-            {/* Restante do código permanece igual... */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <StatsCard
+                title="Total de Cortes"
+                value={156}
+                icon={Scissors}
+                trend={{ value: 12, isPositive: true }}
+              />
+              <StatsCard
+                title="Clientes Atendidos"
+                value={142}
+                icon={Users}
+                trend={{ value: 8, isPositive: true }}
+              />
+              <StatsCard
+                title="Receita Total"
+                value="R$ 4.350"
+                icon={DollarSign}
+                trend={{ value: 15, isPositive: true }}
+              />
+              <StatsCard
+                title="Média por Dia"
+                value={32}
+                icon={TrendingUp}
+                trend={{ value: 5, isPositive: false }}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <BarberPerformanceChart data={performanceData} />
+              <CutTypesChart data={cutTypesData} />
+            </div>
           </>
         )}
 
-        {/* Seções de Barbeiros e Webhook com tipagem corrigida */}
         {activeView === 'barbeiros' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -150,43 +167,6 @@ function App() {
                   </div>
                 </div>
               ))}
-            </div>
-          </motion.div>
-        )}
-
-        {activeView === 'webhook' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 shadow-lg"
-          >
-            <h2 className="text-2xl font-bold mb-6">Configuração de Webhook</h2>
-            <div className="max-w-2xl">
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  URL do Webhook (n8n)
-                </label>
-                <div className="flex gap-4">
-                  <input
-                    type="url"
-                    value={webhookUrl}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setWebhookUrl(e.target.value)}
-                    placeholder="https://seu-webhook.n8n.io/..."
-                    className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  />
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-amber-400 text-white px-6 py-3 rounded-lg flex items-center gap-2"
-                  >
-                    <Link size={18} />
-                    Salvar URL
-                  </motion.button>
-                </div>
-              </div>
-              <p className="text-sm text-gray-500">
-                Configure aqui a integração com o n8n para automatizar processos e sincronizar dados.
-              </p>
             </div>
           </motion.div>
         )}
