@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-gray-800;
+  }
+}
+
+@layer components {
+  .transition-all {
+    @apply transition-all duration-200 ease-in-out;
+  }
+}
